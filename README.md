@@ -1,5 +1,5 @@
 
-# Main
+# Foobar-1
 
 A greymatter.io tenant GitOps repository using CUE! :rocket:
 
@@ -100,7 +100,7 @@ kubectl apply -f ./k8s/sync.yaml -n $MY_NAMESPACE # this deploys the greymatter.
 Once you've deployed your manifests retrieve the Kubernetes ingress service for your 
 project's edge node:
 ```bash
-kubectl get svc edge-main -n $MY_NAMESPACE
+kubectl get svc edge-foobar-1 -n $MY_NAMESPACE
 ```
 
 Retrieve the hostname entry and port and populate the value in `greymatter/globals.cue`: `defaults.edge.endpoint`.
@@ -154,7 +154,7 @@ We recommend using Kubernetes secrets and volume mounts to independently manage 
 #### Securing Your Gateway
 A hook is provided for setting up TLS on the given edge gateway for your project. Please create a secret at the following location:
 ```bash
-kubectl create secret generic greymatter-main-edge-certs \
+kubectl create secret generic greymatter-foobar-1-edge-certs \
 	--from-file=ca.crt=./ca.crt \
 	--from-file=server.crt=./server.crt \
 	--from-file=server.key=./server.key \
@@ -171,7 +171,7 @@ __Key:__ `/etc/proxy/tls/sidecar/server.key`
 > Note: The path + file name is important and should be exactly what is outlined above.
  
 greymatter.io mesh configurations have been setup for your service to look at these paths. 
-It is up to you to get them there! Following the pattern defined in the `k8s/manifests.yaml` edge-main Deployment 
+It is up to you to get them there! Following the pattern defined in the `k8s/manifests.yaml` edge-foobar-1 Deployment 
 is a great way to get your certs mounted and available to the greymatter.io data plane.
 
 > Note: your enterprise will need to make sure the core mesh configurations support volume mounted certificates

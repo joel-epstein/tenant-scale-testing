@@ -6,7 +6,7 @@ import (
 
 globals: gsl.#DefaultContext & {
 	edge_host: ""
-	namespace: "main"
+	namespace: "foobar-1"
 	
 	// Please contact your mesh administrators as to what
 	// values must be set per your mesh deployment.

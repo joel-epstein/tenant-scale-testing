@@ -3,12 +3,12 @@
 // repository in the mesh. This edge would be separate from the default
 // greymatter edge that is deployed via enterprise-level configuration in
 // the gitops-core git repository.
-package main
+package foobar_1
 
 import (
 	gsl "greymatter.io/gsl/v1"
 
-	"main.module/greymatter:globals"
+	"foobar_1.module/greymatter:globals"
 )
 
 Edge: gsl.#Service & {
@@ -18,13 +18,13 @@ Edge: gsl.#Service & {
 
 	// name must follow the pattern namespace/name
 	name:              "edge"
-	display_name:      "Main Edge"
+	display_name:      "Foobar 1 Edge"
 	version:           "v1.8.1"
-	description:       "Edge ingress for main"
+	description:       "Edge ingress for foobar-1"
 	api_endpoint:              "N/A"
 	api_spec_endpoint:         "N/A"
 	business_impact:           "high"
-	owner: "Main"
+	owner: "Foobar 1"
 	capability: ""
 	
 	ingress: {
@@ -42,4 +42,4 @@ Edge: gsl.#Service & {
 	}
 }
 
-exports: "edge-main": Edge
+exports: "edge-foobar-1": Edge

@@ -2,16 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: edge
-  namespace: main
+  namespace: foobar-1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      greymatter.io/cluster: main-edge
+      greymatter.io/cluster: foobar-1-edge
   template:
     metadata:
       labels:
-        greymatter.io/cluster: main-edge
+        greymatter.io/cluster: foobar-1-edge
     spec:
       containers:
         - name: sidecar
@@ -22,7 +22,7 @@ spec:
             name: proxy
           env:
             - name: XDS_CLUSTER
-              value: main-edge
+              value: foobar-1-edge
             - name: ENVOY_ADMIN_LOG_PATH
               value: /dev/stdout
             - name: PROXY_DYNAMIC
@@ -47,7 +47,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: edge
-  namespace: main
+  namespace: foobar-1
 spec:
   ports:
   - name: ingress
@@ -55,6 +55,6 @@ spec:
     protocol: TCP
     targetPort: 10809
   selector:
-    greymatter.io/cluster: main-edge
+    greymatter.io/cluster: foobar-1-edge
   type: LoadBalancer
 

@@ -29,7 +29,6 @@ _namespace2fruit: {
 
 
 everything: list.Concat([
-	_pod_security_policy,
 	(_sync_template & {_namespace: namespace}).objects,
 	(_manifests_template & {_namespace: namespace}).objects,
 	all_fruit,
@@ -81,18 +80,6 @@ _fruit_template: {
 	}
 }
 
-
-_pod_security_policy: [{
-	apiVersion: "policy/v1beta1"
-	kind: "PodSecurityPolicy"
-	metadata: name: "sysctl-psp"
-	spec:
-		allowedUnsafeSysctls: [
-			"net.ipv4.tcp_fin_timeout",
-			"net.ipv4.tcp_tw_recycle",
-			"net.ipv4.tcp_tw_reuse", 
-		]
-}]
 
 
 /////////

@@ -1,1 +1,1 @@
-module: "main.module"
+module: "foobar_1.module"

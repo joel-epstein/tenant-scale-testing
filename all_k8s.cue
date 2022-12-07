@@ -29,9 +29,9 @@ _namespace2fruit: {
 
 
 everything: list.Concat([
-	(_sync_template & {_namespace: namespace}).objects,
-	(_manifests_template & {_namespace: namespace}).objects,
 	all_fruit,
+	(_manifests_template & {_namespace: namespace}).objects,
+	// (_sync_template & {_namespace: namespace}).objects,
 	// [_vegeta_template & {_namespace: namespace}],
 ])
 

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vegeta
+  namespace: foobar-1
+spec:
+  selector:
+    matchLabels:
+      app: vegeta
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: vegeta
+    spec:
+      securityContext:
+        sysctls:
+          - name: net.ipv4.ip_local_port_range
+            value: 12000 65000
+      imagePullSecrets:
+        - name: gm-docker-secret
+      containers:
+        - name: vegeta
+          image: greymatter.jfrog.io/internal-oci/vegeta:joel
+          env:
+            - name: TARGET_FQDN
+              value: edge.foobar-1.svc.cluster.local:10809
+            - name: TARGET_OBJECT
+              value: kiwi
+            - name: COUNT
+              value: "50"
+            - name: RATE
+              value: "50"
+            - name: DURATION
+              value: 0s
+            - name: BLOCK
+              value: "false"
+

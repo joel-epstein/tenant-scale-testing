@@ -116,10 +116,10 @@ _vegeta_template: {
 					name: "vegeta"
 					image: "greymatter.jfrog.io/internal-oci/vegeta:latest"
 					env: [
-						{name: "TARGET_FQDN", value: "edge-projectwaldo\(_num).\(_namespace).svc.cluster.local:\(_port)"},
+						{name: "TARGET_FQDN", value: "edge.\(_namespace).svc.cluster.local:\(_port)"},
 						{name: "TARGET_OBJECT", value: _namespace2fruit[_namespace]},
 						{name: "COUNT", value: "\(number)"},
-						{name: "RATE", value: "840"},
+						{name: "RATE", value: "100"},
 						{name: "DURATION", value: "0s"},
 						{name: "BLOCK", value: "false"},
 					]
@@ -162,7 +162,7 @@ _sync_template: {
 					}]
 					containers: [{
 						name:            "greymatter-sync"
-						image:           "greymatter.jfrog.io/release-oci/greymatter-cli:4.5.7"
+						image:           "greymatter.jfrog.io/oci/greymatter-cli:4.5.7"
 						imagePullPolicy: "Always"
 						command: ["/usr/local/bin/greymatter"]
 						args: [
@@ -256,7 +256,7 @@ _manifests_template: {
 					]
 					containers: [{
 						name:            "sidecar"
-						image:           "greymatter.jfrog.io/dev-oci/gm-proxy:1.8.1"
+						image:           "greymatter.jfrog.io/oci/greymatter-proxy:1.8.1"
 						imagePullPolicy: "Always"
 						ports: [{
 							containerPort: _port

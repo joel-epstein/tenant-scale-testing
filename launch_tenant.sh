@@ -13,7 +13,7 @@ for i in {1..5}
     done
 
 # Start up sync
-cue eval all_k8s.cue -e only_sync --out text -t number=5 -t namespace=foobar-1 | kubectl apply -f
+cue eval all_k8s.cue -e sync_only --out text -t number=5 -t namespace=foobar-1 | kubectl apply -f -
 
 # Gitops push the config
 git add greymatter/foobar_1

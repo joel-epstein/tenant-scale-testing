@@ -179,7 +179,8 @@ _sync_template: {
 					}]
 					containers: [{
 						name:            "greymatter-sync"
-						image:           "greymatter.jfrog.io/oci/greymatter-cli:4.5.7"
+						// image:           "greymatter.jfrog.io/oci/greymatter-cli:4.5.7"
+						image:           "greymatter.jfrog.io/internal-oci/cli:joel-test"
 						imagePullPolicy: "Always"
 						command: ["/usr/local/bin/greymatter"]
 						args: [

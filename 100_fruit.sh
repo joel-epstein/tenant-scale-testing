@@ -22,9 +22,5 @@ do
 #~/greymatter init service --insecure --type=http --dir greymatter/foobar_11 --port=9090 --namespace=foobar-11 "salmon${i}"
 #~/greymatter init service --insecure --type=http --dir greymatter/foobar_12 --port=9090 --namespace=foobar-12 "crab${i}"
 
-
-
-
-
 done
 

@@ -27,6 +27,13 @@ _namespace2fruit: {
 }
 
 
+// To stand up a namespace at scale, run everything and it should reconcile.
+
+// Best practice on SETUP is as follows:
+// Deploy Fruit, Deploy Edge, Deploy Sync and apply config and Deploy Vegeta.
+// 
+// Best practice on TEARDOWN is as follows:
+// Remove Vegeta, Remove Fruit, Remove Edge, remove conifg and Remove Sync
 
 everything: list.Concat([
 	all_fruit,
@@ -35,8 +42,18 @@ everything: list.Concat([
 	// [_vegeta_template & {_namespace: namespace}],
 ])
 
+
 everything_yaml: yaml.MarshalStream(everything)
 
+fruit_only: yaml.MarshalStream(all_fruit)
+
+edge_only: yaml.MarshalStream((_manifests_template & {_namespace: namespace}).objects)
+
+// This allows us to WAIT and only delete sync AFTER we have removed gm_config.
+// This order of operations leaves less noise in the Control Logs.
+sync_only: yaml.MarshalStream((_sync_template & {_namespace: namespace}).objects)
+
+vegeta_only: yaml.MarshalStream([_vegeta_template & {_namespace: namespace}])
 
 
 all_fruit: [for i in list.Range(1,number+1,1) {

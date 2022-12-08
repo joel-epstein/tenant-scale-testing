@@ -8,7 +8,7 @@ for i in {1..5}
     do
 
     #echo "kiwi${i}"
-    ~/greymatter-fix-deletes init service --insecure --type=http --dir greymatter/foobar_1 --port=9090 --namespace=foobar-1 "kiwi${i}"
+    ~/greymatter-keyfix init service --insecure --type=http --dir greymatter/foobar_1 --port=9090 --namespace=foobar-1 "kiwi${i}"
 
     done
 

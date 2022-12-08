@@ -16,7 +16,6 @@ Edge: gsl.#Service & {
 	// to your service definitions.
 	context: Edge.#NewContext & globals
 
-	// name must follow the pattern namespace/name
 	name:              "edge"
 	display_name:      "Foobar 1 Edge"
 	version:           "v1.8.1"

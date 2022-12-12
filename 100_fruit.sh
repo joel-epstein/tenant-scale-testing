@@ -6,11 +6,11 @@
 # they need to be grouped for the eval within EXPORTS.cue
 # kiwi peach orange fig grape
 
-for i in {1..100}
+for i in {1..30}
 do
 #echo "kiwi${i}"
-# ~/greymatter-keyfix init service --insecure --type=http --dir greymatter/foobar_1 --port=9090 --namespace=foobar-1 "kiwi${i}"
-~/greymatter-keyfix init service --insecure --type=http --dir greymatter/foobar_2 --port=9090 --namespace=foobar-2 "peach${i}"
+~/greymatter-keyfix init service --insecure --type=http --dir greymatter/foobar_1 --port=9090 --namespace=foobar-1 "kiwi${i}"
+# ~/greymatter-keyfix init service --insecure --type=http --dir greymatter/foobar_2 --port=9090 --namespace=foobar-2 "peach${i}"
 #~/greymatter init service --insecure --type=http --dir greymatter/foobar_3 --port=9090 --namespace=foobar-3 "orange${i}"
 #~/greymatter init service --insecure --type=http --dir greymatter/foobar_4 --port=9090 --namespace=foobar-4 "fig${i}"
 #~/greymatter init service --insecure --type=http --dir greymatter/foobar_5 --port=9090 --namespace=foobar-5 "grape${i}"

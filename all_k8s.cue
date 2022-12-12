@@ -1,4 +1,8 @@
-// cue eval all_k8s.cue -e everything_yaml --out text -t number=150 -t namespace=foobar-1
+// cue eval all_k8s.cue -e everything_yaml --out text -t number=100 -t namespace=foobar-1
+
+// cue eval all_k8s.cue -e edge_only --out text -t number=100 -t namespace=foobar-2
+
+// cue eval all_k8s.cue -e vegeta_only --out text -t number=100 -t namespace=foobar-2
 
 
 import (
@@ -105,7 +109,7 @@ _fruit_template: {
 _vegeta_template: {
   _namespace: string
 	_num: strings.Split(_namespace, "-")[1]
-	_port: 10808+strconv.Atoi(_num)
+	_port: 10809
 
 	apiVersion: "apps/v1"
 	kind:       "Deployment"
@@ -136,11 +140,14 @@ _vegeta_template: {
 						{name: "TARGET_FQDN", value: "edge.\(_namespace).svc.cluster.local:\(_port)"},
 						{name: "TARGET_OBJECT", value: _namespace2fruit[_namespace]},
 						{name: "COUNT", value: "\(number)"},
-						{name: "RATE", value: "100"},
+						{name: "NAMESPACE", value: _namespace},
+						{name: "RATE", value: "200"},
 						{name: "DURATION", value: "0s"},
 						{name: "BLOCK", value: "false"},
+						{name: "IDLE", value: "0"},
 					]
 				}]
+				terminationGracePeriodSeconds: 0
 			}
 		}
 	}
@@ -260,7 +267,7 @@ _manifests_template: {
 			namespace: _namespace
 		}
 		spec: {
-			replicas: 10
+			replicas: 1
 			selector: matchLabels: "greymatter.io/cluster": "\(_namespace)-edge"
 			template: {
 				metadata: labels: "greymatter.io/cluster": "\(_namespace)-edge"
@@ -300,6 +307,7 @@ _manifests_template: {
 							value: "50000"
 						}]
 					}]
+					terminationGracePeriodSeconds: 0
 					imagePullSecrets: [{
 						name: "gm-docker-secret"
 					}]

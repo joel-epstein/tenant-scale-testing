@@ -1,4 +1,8 @@
-// cue eval all_k8s.cue -e everything_yaml --out text -t number=150 -t namespace=foobar-1
+// cue eval all_k8s.cue -e everything_yaml --out text -t number=100 -t namespace=foobar-1
+
+// cue eval all_k8s.cue -e edge_only --out text -t number=100 -t namespace=foobar-2
+
+// cue eval all_k8s.cue -e vegeta_only --out text -t number=100 -t namespace=foobar-2
 
 
 import (
@@ -27,16 +31,33 @@ _namespace2fruit: {
 }
 
 
+// To stand up a namespace at scale, run everything and it should reconcile.
+
+// Best practice on SETUP is as follows:
+// Deploy Fruit, Deploy Edge, Deploy Sync and apply config and Deploy Vegeta.
+// 
+// Best practice on TEARDOWN is as follows:
+// Remove Vegeta, Remove Fruit, Remove Edge, remove conifg and Remove Sync
 
 everything: list.Concat([
-	(_sync_template & {_namespace: namespace}).objects,
-	(_manifests_template & {_namespace: namespace}).objects,
 	all_fruit,
+	(_manifests_template & {_namespace: namespace}).objects,
+	// (_sync_template & {_namespace: namespace}).objects,
 	// [_vegeta_template & {_namespace: namespace}],
 ])
 
+
 everything_yaml: yaml.MarshalStream(everything)
 
+fruit_only: yaml.MarshalStream(all_fruit)
+
+edge_only: yaml.MarshalStream((_manifests_template & {_namespace: namespace}).objects)
+
+// This allows us to WAIT and only delete sync AFTER we have removed gm_config.
+// This order of operations leaves less noise in the Control Logs.
+sync_only: yaml.MarshalStream((_sync_template & {_namespace: namespace}).objects)
+
+vegeta_only: yaml.MarshalStream([_vegeta_template & {_namespace: namespace}])
 
 
 all_fruit: [for i in list.Range(1,number+1,1) {
@@ -88,7 +109,7 @@ _fruit_template: {
 _vegeta_template: {
   _namespace: string
 	_num: strings.Split(_namespace, "-")[1]
-	_port: 10808+strconv.Atoi(_num)
+	_port: 10809
 
 	apiVersion: "apps/v1"
 	kind:       "Deployment"
@@ -116,14 +137,17 @@ _vegeta_template: {
 					name: "vegeta"
 					image: "greymatter.jfrog.io/internal-oci/vegeta:latest"
 					env: [
-						{name: "TARGET_FQDN", value: "edge-projectwaldo\(_num).\(_namespace).svc.cluster.local:\(_port)"},
+						{name: "TARGET_FQDN", value: "edge.\(_namespace).svc.cluster.local:\(_port)"},
 						{name: "TARGET_OBJECT", value: _namespace2fruit[_namespace]},
 						{name: "COUNT", value: "\(number)"},
-						{name: "RATE", value: "840"},
+						{name: "NAMESPACE", value: _namespace},
+						{name: "RATE", value: "200"},
 						{name: "DURATION", value: "0s"},
 						{name: "BLOCK", value: "false"},
+						{name: "IDLE", value: "0"},
 					]
 				}]
+				terminationGracePeriodSeconds: 0
 			}
 		}
 	}
@@ -162,7 +186,8 @@ _sync_template: {
 					}]
 					containers: [{
 						name:            "greymatter-sync"
-						image:           "greymatter.jfrog.io/release-oci/greymatter-cli:4.5.7"
+						// image:           "greymatter.jfrog.io/oci/greymatter-cli:4.5.7"
+						image:           "greymatter.jfrog.io/internal-oci/cli:joel-test"
 						imagePullPolicy: "Always"
 						command: ["/usr/local/bin/greymatter"]
 						args: [
@@ -242,7 +267,7 @@ _manifests_template: {
 			namespace: _namespace
 		}
 		spec: {
-			replicas: 10
+			replicas: 1
 			selector: matchLabels: "greymatter.io/cluster": "\(_namespace)-edge"
 			template: {
 				metadata: labels: "greymatter.io/cluster": "\(_namespace)-edge"
@@ -256,7 +281,7 @@ _manifests_template: {
 					]
 					containers: [{
 						name:            "sidecar"
-						image:           "greymatter.jfrog.io/dev-oci/gm-proxy:1.8.1"
+						image:           "greymatter.jfrog.io/oci/greymatter-proxy:1.8.1"
 						imagePullPolicy: "Always"
 						ports: [{
 							containerPort: _port
@@ -282,6 +307,7 @@ _manifests_template: {
 							value: "50000"
 						}]
 					}]
+					terminationGracePeriodSeconds: 0
 					imagePullSecrets: [{
 						name: "gm-docker-secret"
 					}]
